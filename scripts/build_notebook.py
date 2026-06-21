@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Generador del notebook entregable Actividad5_VisualizacionResultados.ipynb
+Generador del notebook entregable Visualizacion_Equipo61.ipynb
+(titulo interno: "Actividad5 VisualizacionResultados")
 TC4034 - Analisis de Grandes Volumenes de Datos - Modulo 6, Actividad 5
 Equipo 61
 
@@ -1040,6 +1041,6 @@ nb["metadata"] = {
     "title": "Actividad 5 - Visualizacion de Resultados (Equipo 61)",
 }
 
-out = "Actividad5_VisualizacionResultados.ipynb"
+out = "Visualizacion_Equipo61.ipynb"
 nbf.write(nb, out)
 print("Notebook escrito:", out, "con", len(cells), "celdas")

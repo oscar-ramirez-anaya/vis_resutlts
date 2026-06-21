@@ -68,9 +68,9 @@ descargan con `start_jupyter.sh`.
 
 El entregable es un único notebook **ejecutado, con outputs y gráficos** (60 celdas):
 
-- **Visor enriquecido (nbviewer, recomendado para tablas y Plotly):** https://nbviewer.org/github/oscar-ramirez-anaya/vis_resutlts/blob/main/Actividad5_VisualizacionResultados.ipynb
-- **Visualizar en GitHub:** [`Actividad5_VisualizacionResultados.ipynb`](./Actividad5_VisualizacionResultados.ipynb)
-- **Descargar (raw):** https://raw.githubusercontent.com/oscar-ramirez-anaya/vis_resutlts/main/Actividad5_VisualizacionResultados.ipynb
+- **Visor enriquecido (nbviewer, recomendado para tablas y Plotly):** https://nbviewer.org/github/oscar-ramirez-anaya/vis_resutlts/blob/main/Visualizacion_Equipo61.ipynb
+- **Visualizar en GitHub:** [`Visualizacion_Equipo61.ipynb`](./Visualizacion_Equipo61.ipynb)
+- **Descargar (raw):** https://raw.githubusercontent.com/oscar-ramirez-anaya/vis_resutlts/main/Visualizacion_Equipo61.ipynb
 
 > El cómputo es **PySpark local** (`local[*]`). El mismo pipeline escala sin cambios a **GCP Dataproc**
 > leyendo desde Cloud Storage. El parámetro `MESES` permite una corrida local más ligera (3 meses) sin
@@ -144,14 +144,14 @@ Entorno: PySpark local (`local[*]`, Java 17). El notebook se regenera de forma r
 
 ```bash
 python3 scripts/build_notebook.py
-python3 -m jupyter nbconvert --to notebook --execute --inplace Actividad5_VisualizacionResultados.ipynb
+python3 -m jupyter nbconvert --to notebook --execute --inplace Visualizacion_Equipo61.ipynb
 ```
 
 ## Estructura del repositorio
 
 ```
 .
-├── Actividad5_VisualizacionResultados.ipynb   # Notebook entregable — ejecutado con gráficos
+├── Visualizacion_Equipo61.ipynb   # Notebook entregable — ejecutado con gráficos
 ├── README.md
 ├── start_jupyter.sh                           # lanzador local (PySpark + descarga de datos)
 ├── scripts/

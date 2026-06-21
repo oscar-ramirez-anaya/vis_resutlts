@@ -32,5 +32,5 @@ for m in $MESES; do
 done
 
 echo ""
-echo "Abriendo JupyterLab. Abre Actividad5_VisualizacionResultados.ipynb y ejecuta todas las celdas."
-python3 -m jupyter lab Actividad5_VisualizacionResultados.ipynb
+echo "Abriendo JupyterLab. Abre Visualizacion_Equipo61.ipynb y ejecuta todas las celdas."
+python3 -m jupyter lab Visualizacion_Equipo61.ipynb
