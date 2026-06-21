@@ -90,6 +90,29 @@ El entregable es un único notebook **ejecutado, con outputs y gráficos** (60 c
 5. **Discusión y conclusiones** — significancia frente al baseline, variabilidad (CV %, IC 95 %),
    generalización, limitaciones y trabajo futuro.
 
+## Proceso realizado (paso a paso)
+
+1. **Ingesta y unificación.** Se leen los 12 Parquet mensuales de 2024 (41.2 M registros), normalizando
+   cada archivo a un **esquema canónico** para resolver la heterogeneidad de tipos entre meses.
+2. **Capa Silver.** Filtros de calidad (tarifas/distancias válidas, orden temporal, año 2024) que descartan
+   el 4.63 % del ruido → 39.26 M registros limpios.
+3. **Caracterización.** Se construyen las 3 variables del Módulo 3 (`tipo_dia`, `zona_origen`, `tipo_pago`)
+   que generan los **12 estratos** y se verifica su tamaño.
+4. **Muestra M.** Tamaño justificado por **Cochran + FPC** (n mínimo ≈ 9,604 al 95 %, ±1 %), **asignación
+   proporcional** con piso y **muestreo sistemático** → M = 80,006, validando que reproduce las
+   proporciones de la población.
+5. **Etiqueta y población supervisada.** `tip_alta = 1` si la propina supera el 20 % de la tarifa; la tarea
+   se restringe a viajes con tarjeta (60,574 registros). Se excluyen las variables con fuga.
+6. **Definición de *k*.** Se argumenta **k = 5** desde sesgo–varianza, representatividad y costo, con
+   verificación numérica del estrato más pequeño.
+7. **Construcción de los k-folds.** Asignación **estratificada y determinista** con `xxhash64`
+   (reproducible), verificando que los pliegues son disjuntos, exhaustivos y balanceados en clase.
+8. **Experimentación.** Para cada uno de los 5 pliegues se entrena el `RandomForestClassifier` y se
+   registran AUC-ROC/AUC-PR (distribuidas), métricas binarias por clase, brecha de sobre-ajuste, tiempos,
+   predicciones e importancia de variables; se compara contra un **baseline trivial**.
+9. **Visualización y discusión.** ~20 gráficas y tablas que comunican el desempeño y su **variabilidad**,
+   seguidas de la interpretación y las conclusiones.
+
 ## Visualizaciones incluidas
 
 Representatividad del muestreo (D vs M) · distribución de clases por pliegue · métricas por pliegue
@@ -120,6 +143,56 @@ la decisión dura es modesto** (MCC ≈ 0): predecir la propina alta a partir de
 viaje es un problema **intrínsecamente difícil**, como confirman la calibración, la separación de clases y
 el análisis de umbral. El valor del trabajo es **metodológico**: cuantificar la variabilidad y comunicarla
 con visualizaciones, no solo reportar una cifra puntual.
+
+## Galería de resultados
+
+> Imágenes generadas por el notebook ejecutado. Para la versión interactiva (Plotly) y todas las tablas,
+> abrir el [visor nbviewer](https://nbviewer.org/github/oscar-ramirez-anaya/vis_resutlts/blob/main/Visualizacion_Equipo61.ipynb).
+
+**Representatividad del muestreo (D vs M).** La muestra reproduce las proporciones por estrato de la
+población (desviación máxima ≈ 0), garantizando que M es representativa.
+
+![Representatividad del muestreo](docs/img/01_muestreo_representatividad.png)
+
+**Tendencia central y dispersión de las métricas entre pliegues.** Barras por pliegue, y boxplot + violín
+que muestran la baja variabilidad (cajas estrechas) del estimador de validación cruzada.
+
+![Métricas por pliegue](docs/img/03_metricas_por_pliegue.png)
+![Boxplot y violín](docs/img/04_boxplot_violin.png)
+
+**Dispersión y perfil promedio (radar).** Cada pliegue como punto (AUC-ROC vs AUC-PR) y el perfil medio de
+las métricas.
+
+![Dispersión y radar](docs/img/05_dispersion_radar.png)
+
+**Curvas ROC y Precisión-Recall por pliegue (con banda ±1 std).** La capacidad de *ranking* y su
+incertidumbre; la banda estrecha confirma la estabilidad.
+
+![Curvas ROC y PR](docs/img/06_curvas_roc_pr.png)
+
+**Sobre-ajuste y curva de aprendizaje.** Brecha train vs test por pliegue y evolución del desempeño al
+crecer el conjunto de entrenamiento (las curvas convergen y se estabilizan).
+
+![Sobre-ajuste y curva de aprendizaje](docs/img/07_sobreajuste_curva_aprendizaje.png)
+
+**Estructura de errores (mapas de calor).** Matriz de confusión agregada (conteos y normalizada) y mapa de
+calor métrica × pliegue.
+
+![Matriz de confusión](docs/img/08_matriz_confusion_heatmaps.png)
+
+**Calibración y separación de clases.** Curva de *reliability* y distribución de la probabilidad predicha
+por clase real: el solapamiento evidencia la dificultad intrínseca de la tarea.
+
+![Calibración y distribución](docs/img/10_calibracion_distribucion.png)
+
+**Sensibilidad al umbral y curva de ganancia (lift).** Cómo cambian precisión/recall/F1/MCC con el corte y
+cuántos positivos se capturan al contactar una fracción de la población.
+
+![Umbral y ganancia](docs/img/11_umbral_ganancia.png)
+
+**Importancia de variables (media ± std entre pliegues).** *Drivers* del modelo y su estabilidad.
+
+![Importancia de variables](docs/img/12_importancia_variables.png)
 
 ## Mapeo a la rúbrica (cada criterio 20 %)
 
@@ -153,10 +226,12 @@ python3 -m jupyter nbconvert --to notebook --execute --inplace Visualizacion_Equ
 .
 ├── Visualizacion_Equipo61.ipynb   # Notebook entregable — ejecutado con gráficos
 ├── README.md
-├── start_jupyter.sh                           # lanzador local (PySpark + descarga de datos)
+├── start_jupyter.sh                # lanzador local (PySpark + descarga de datos)
 ├── scripts/
-│   └── build_notebook.py                      # generador reproducible del notebook (nbformat)
-└── .gitignore                                 # excluye datos, secretos y artefactos
+│   └── build_notebook.py          # generador reproducible del notebook (nbformat)
+├── docs/
+│   └── img/                       # imágenes de las gráficas (galería del README)
+└── .gitignore                     # excluye datos, secretos y artefactos
 ```
 
 ## Referencias
