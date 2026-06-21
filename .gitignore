@@ -1,0 +1,39 @@
+# ── Datos (no se versionan; se descargan con start_jupyter.sh) ──
+data/
+*.parquet
+*.csv
+
+# ── Credenciales / secretos (NUNCA subir) ──
+*.json
+!**/nbformat*.json
+*-key.json
+*_key.json
+key.json
+credentials*.json
+application_default_credentials.json
+*.pem
+*.p12
+*.pfx
+.config/
+gcloud/
+service-account*.json
+sa-*.json
+.env
+.env.*
+
+# ── Configuración de editores / IDE (no subir) ──
+.cursor/
+.idea/
+.vscode/
+
+# ── Evidencias pesadas ──
+screenshots/
+
+# ── Artefactos Spark / Python ──
+spark-warehouse/
+metastore_db/
+derby.log
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
