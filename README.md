@@ -59,6 +59,32 @@ El entregable es un único notebook **ejecutado, con outputs y gráficos**:
 5. **Discusión y conclusiones** — significancia frente al baseline, variabilidad (CV %, IC 95 %),
    generalización, limitaciones y trabajo futuro.
 
+## Resultados
+
+**Volumen procesado (12 meses, local).** Base global **D = 41,169,720** registros → capa **Silver
+39,263,800** (−4.63 %) → muestra **M = 80,006** → población supervisada (solo tarjeta) **60,574**, con
+**prevalencia `tip_alta=1` = 0.758** (la clase positiva es mayoritaria).
+
+**Validación cruzada estratificada (k = 5).** Métricas sobre el conjunto de prueba, promediadas entre
+pliegues:
+
+| Métrica (k=5) | Media ± std | CV % |
+|---|---|---|
+| AUC-ROC | **0.5825 ± 0.0068** | 1.17 |
+| AUC-PR | **0.8054 ± 0.0032** | 0.40 |
+| F1 (`tip_alta`) | 0.8623 ± 0.0001 | ~0 |
+| MCC | 0.000 ± 0.010 | — |
+| Brecha train−test (AUC) | **+0.0343** | — |
+| Baseline trivial | AUC-ROC 0.500 · AUC-PR 0.758 | — |
+
+**Lectura.** Los **coeficientes de variación de un dígito** muestran que el desempeño es **muy estable** y
+**reproducible** entre particiones —el objetivo central de esta actividad—. El modelo supera al baseline en
+*ranking* (+0.082 AUC-ROC) y **generaliza** (brecha train−test pequeña), pero su **poder discriminante en
+la decisión dura es modesto** (MCC ≈ 0): predecir la propina alta a partir de variables operativas del
+viaje es un problema **intrínsecamente difícil**, como confirman la calibración, la separación de clases y
+el análisis de umbral del notebook. El valor del trabajo es **metodológico**: cuantificar la variabilidad
+y comunicarla con visualizaciones, no solo reportar una cifra puntual.
+
 ## Mapeo a la rúbrica (cada criterio 20 %)
 
 1. **Definir validación cruzada** — §1: argumentación de **k** y representatividad de cada pliegue.
